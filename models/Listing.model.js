@@ -38,10 +38,10 @@ const listingSchema = new Schema({
     required: true,
   },
   lng: {
-    type: String,
+    type: Number,
     required: true,
   },
-  propery_id_api: {
+  property_id_api: {
     type: String,
     required: true,
   },

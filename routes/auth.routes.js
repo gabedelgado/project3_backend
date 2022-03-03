@@ -10,6 +10,8 @@ const saltRounds = 10;
 // Require the User model in order to interact with the database
 const User = require("../models/User.model");
 
+const Home_List = require("../models/Home_List.model");
+
 // require jwt to send tokens on login and signup
 const jwt = require("jsonwebtoken");
 
@@ -28,9 +30,7 @@ router.post("/signup", (req, res) => {
   const { username, password } = req.body;
 
   if (!username) {
-    return res
-      .status(400)
-      .json({ errorMessage: "Please provide your username." });
+    return res.status(400).json({ errorMessage: "Please provide your username." });
   }
 
   if (password.length < 8) {
@@ -52,12 +52,18 @@ router.post("/signup", (req, res) => {
       .then((salt) => bcrypt.hash(password, salt))
       .then((hashedPassword) => {
         // Create a user and save it in the database
+
         return User.create({
           username,
           password: hashedPassword,
         });
       })
-      .then((user) => {
+      .then(async (user) => {
+        let newHomeList = await Home_List.create({ owner: user._id });
+        await User.findByIdAndUpdate(user._id, {
+          home_list: newHomeList._id,
+        });
+
         // generate and send web token
         const payload = { _id: user._id, username: user.username };
 
@@ -73,8 +79,7 @@ router.post("/signup", (req, res) => {
         }
         if (error.code === 11000) {
           return res.status(400).json({
-            errorMessage:
-              "Username need to be unique. The username you chose is already in use.",
+            errorMessage: "Username need to be unique. The username you chose is already in use.",
           });
         }
         return res.status(500).json({ errorMessage: error.message });
@@ -87,9 +92,7 @@ router.post("/login", (req, res, next) => {
   const { username, password } = req.body;
 
   if (!username) {
-    return res
-      .status(400)
-      .json({ errorMessage: "Please provide your username." });
+    return res.status(400).json({ errorMessage: "Please provide your username." });
   }
 
   // Here we use the same logic as above
@@ -150,9 +153,22 @@ router.get("/delete", isAuthenticated, async (req, res) => {
   } catch (err) {
     return res.status(500).json({
       err,
-      message:
-        "Something went wrong when trying to delete that user from the DB",
+      message: "Something went wrong when trying to delete that user from the DB",
     });
+  }
+});
+
+router.post("/update-user", isAuthenticated, async (req, res) => {
+  try {
+    let doubleuser = await User.findOne({ username: req.body.username });
+    if (doubleuser) {
+      return res.status(409).json({ error: "that username is taken, please try another." });
+    } else {
+      await User.findByIdAndUpdate(req.user._id, { username: req.body.username });
+      return res.json({ message: "Username successfully updated." });
+    }
+  } catch (error) {
+    return res.status(500).json({ error, message: "something went wrong when trying to update your username. " });
   }
 });
 

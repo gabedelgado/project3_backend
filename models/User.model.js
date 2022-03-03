@@ -8,7 +8,7 @@ const userSchema = new Schema(
       // unique: true -> Ideally, should be unique, but its up to you
     },
     password: String,
-    saved_homes: {
+    home_list: {
       type: Schema.Types.ObjectId,
       ref: "Home_List",
     },
