@@ -1,17 +1,19 @@
 const { Schema, model } = require("mongoose");
 
 // TODO: Please make sure you edit the user model to whatever makes sense in this case
-const userSchema = new Schema(
+const homeListSchema = new Schema(
   {
-    username: {
-      type: String,
-      // unique: true -> Ideally, should be unique, but its up to you
-    },
-    password: String,
-    saved_homes: {
+    owner: {
       type: Schema.Types.ObjectId,
-      ref: "Home_List",
+      ref: "User",
+      required: true,
     },
+    savedHomes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Listing",
+      },
+    ],
   },
   {
     // this second object adds extra properties: `createdAt` and `updatedAt`
@@ -19,6 +21,6 @@ const userSchema = new Schema(
   }
 );
 
-const User = model("User", userSchema);
+const Home_List = model("Home_List", homeListSchema);
 
-module.exports = User;
+module.exports = Home_List;

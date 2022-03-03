@@ -142,4 +142,18 @@ router.get("/logout", (req, res) => {
   });
 });
 
+router.get("/delete", isAuthenticated, async (req, res) => {
+  const idToDelete = req.user._id;
+  try {
+    await User.findByIdAndDelete(idToDelete);
+    return res.json({ message: "User successfully deleted" });
+  } catch (err) {
+    return res.status(500).json({
+      err,
+      message:
+        "Something went wrong when trying to delete that user from the DB",
+    });
+  }
+});
+
 module.exports = router;
