@@ -46,7 +46,7 @@ const listingSchema = new Schema({
     required: true,
   },
   sqft: {
-    type: Number,
+    type: String,
     required: true,
   },
   lot_sqft: {
@@ -55,9 +55,6 @@ const listingSchema = new Schema({
   property_type: {
     type: String,
     required: true,
-  },
-  mls: {
-    type: String,
   },
   listing_id_api: {
     type: String,
@@ -71,6 +68,15 @@ const listingSchema = new Schema({
     type: String,
   },
   virtual_tour_link: {
+    type: String,
+  },
+  office_name: {
+    type: String,
+  },
+  beds: {
+    type: String,
+  },
+  baths: {
     type: String,
   },
 });
