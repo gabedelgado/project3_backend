@@ -50,7 +50,7 @@ const listingSchema = new Schema({
     required: true,
   },
   lot_sqft: {
-    type: Number,
+    type: String,
   },
   property_type: {
     type: String,
