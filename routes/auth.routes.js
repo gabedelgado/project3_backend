@@ -135,16 +135,6 @@ router.post("/login", (req, res, next) => {
     });
 });
 
-// HOW CAN WE DO THIS ?
-router.get("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      return res.status(500).json({ errorMessage: err.message });
-    }
-    res.json({ message: "Done" });
-  });
-});
-
 router.get("/delete", isAuthenticated, async (req, res) => {
   const idToDelete = req.user._id;
   try {
